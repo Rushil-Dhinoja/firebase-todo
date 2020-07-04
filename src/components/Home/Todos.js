@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 const Todos = ({ fetchAllTodos, user, todo: { todos } }) => {
     useEffect(() => {
         fetchAllTodos(user.uid);
-    }, [fetchAllTodos, user.uid]);
+    }, [fetchAllTodos]);
     return (
         <Wrapper>
             <Title>Your Todos</Title>
