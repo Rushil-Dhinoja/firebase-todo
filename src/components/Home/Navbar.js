@@ -78,7 +78,7 @@ const Navbar = ({ logOutUser, auth: { user, loading } }) => {
                     </List>
                     <Logout onClick={() => logOutUser()}>Log Out</Logout>
                     <ProfileNavItem>
-                        <p> {user.displayName}</p> <img src={user.photoURL} />{' '}
+                        <p> {user.displayName}</p> <img src={user.photoURL} alt='user' />{' '}
                     </ProfileNavItem>
                 </Wrapper>
             ) : (
@@ -88,7 +88,10 @@ const Navbar = ({ logOutUser, auth: { user, loading } }) => {
     );
 };
 
-Navbar.propTypes = {};
+Navbar.propTypes = {
+    logOutUser: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = (state) => ({
     auth: state.auth,

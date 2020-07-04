@@ -55,7 +55,7 @@ export const changeCompleted = (docid, userid, completed) => async (dispatch) =>
             id: docid,
             completed: completed,
         };
-        const res = await db.collection(userid).doc(docid).update({
+        await db.collection(userid).doc(docid).update({
             completed: !completed,
         });
         dispatch({
@@ -70,7 +70,7 @@ export const changeCompleted = (docid, userid, completed) => async (dispatch) =>
 export const deleteTodo = (docid, userid) => async (dispatch) => {
     const db = firebase.firestore();
     try {
-        const res = await db.collection(userid).doc(docid).delete();
+        await db.collection(userid).doc(docid).delete();
         dispatch({
             type: DELETE_TODO,
             payload: docid,

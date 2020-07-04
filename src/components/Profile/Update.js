@@ -123,6 +123,11 @@ const Update = ({ user, setAlert, updateName, setNewPassword }) => {
     );
 };
 
-Update.propTypes = {};
+Update.propTypes = {
+    user: PropTypes.object.isRequired,
+    setAlert: PropTypes.func.isRequired,
+    updateName: PropTypes.func.isRequired,
+    setNewPassword: PropTypes.func.isRequired,
+};
 
 export default connect(null, { setAlert, updateName, setNewPassword })(Update);

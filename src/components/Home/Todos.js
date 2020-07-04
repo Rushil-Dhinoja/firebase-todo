@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Title from '../Forms/Utils/Title';
@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 const Todos = ({ fetchAllTodos, user, todo: { todos } }) => {
     useEffect(() => {
         fetchAllTodos(user.uid);
-    }, [fetchAllTodos]);
+    }, [fetchAllTodos, user.uid]);
     return (
         <Wrapper>
             <Title>Your Todos</Title>
@@ -29,7 +29,11 @@ const Todos = ({ fetchAllTodos, user, todo: { todos } }) => {
     );
 };
 
-Todos.propTypes = {};
+Todos.propTypes = {
+    fetchAllTodos: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired,
+    todo: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = (state) => ({
     todo: state.todo,

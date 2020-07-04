@@ -44,7 +44,9 @@ const Profile = ({ auth: { user, loading } }) => {
     );
 };
 
-Profile.propTypes = {};
+Profile.propTypes = {
+    auth: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = (state) => ({
     auth: state.auth,

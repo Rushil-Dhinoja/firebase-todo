@@ -69,7 +69,7 @@ const Wrapper = styled.div`
 const SideBar = ({ user }) => {
     return (
         <Wrapper>
-            <img src={user.photoURL} />
+            <img src={user.photoURL} alt='user' />
             <div>
                 <p>{user.displayName}</p>
                 <p>{user.email}</p>
@@ -78,6 +78,8 @@ const SideBar = ({ user }) => {
     );
 };
 
-SideBar.propTypes = {};
+SideBar.propTypes = {
+    user: PropTypes.object,
+};
 
 export default SideBar;

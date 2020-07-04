@@ -44,6 +44,10 @@ const AddTodo = ({ setAlert, addNewTodo, user }) => {
     );
 };
 
-AddTodo.propTypes = {};
+AddTodo.propTypes = {
+    setAlert: PropTypes.func.isRequired,
+    addNewTodo: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired,
+};
 
 export default connect(null, { setAlert, addNewTodo })(AddTodo);

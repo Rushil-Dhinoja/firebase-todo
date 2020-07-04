@@ -1,4 +1,4 @@
-import { SET_LOADING, DECREMENT, SET_COUNTDOWN, SIGN_OUT_USER } from './types';
+import { SET_LOADING, SIGN_OUT_USER } from './types';
 import firebase from '../../firebase/firebase';
 import { setAlert } from './alert';
 import { picturesFromInitials, random } from '../../utils/InitialsImageGenerator';

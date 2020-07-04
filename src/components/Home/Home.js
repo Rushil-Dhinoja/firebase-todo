@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
 import VerifyEmail from './Utils/VerifyEmail';
 import Loader from '../utils/Loader';
@@ -21,7 +20,9 @@ const Home = ({ auth: { user, loading } }) => {
     );
 };
 
-Home.propTypes = {};
+Home.propTypes = {
+    auth: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = (state) => ({
     auth: state.auth,

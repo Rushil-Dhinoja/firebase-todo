@@ -39,6 +39,8 @@ const TodoContainer = ({ user }) => {
     );
 };
 
-TodoContainer.propTypes = {};
+TodoContainer.propTypes = {
+    user: PropTypes.object.isRequired,
+};
 
 export default TodoContainer;

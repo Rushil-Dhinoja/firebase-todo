@@ -44,12 +44,16 @@ const Todo = ({ children, completed, id, changeCompleted, deleteTodo, auth: { us
                 />
             </div>
             <Text comp={completed}>{children}</Text>
-            <img onClick={() => deleteTodo(id, user.uid)} src={deleteImg} />
+            <img onClick={() => deleteTodo(id, user.uid)} src={deleteImg} alt='' />
         </Wrapper>
     );
 };
 
-Todo.propTypes = {};
+Todo.propTypes = {
+    changeCompleted: PropTypes.func.isRequired,
+    deleteTodo: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
