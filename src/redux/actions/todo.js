@@ -22,9 +22,7 @@ export const addNewTodo = (todo, userid) => async (dispatch) => {
             type: ADD_TODO,
             payload: newTodoObj,
         });
-    } catch (error) {
-        console.log(error);
-    }
+    } catch (error) {}
 };
 
 export const fetchAllTodos = (userid) => async (dispatch) => {
@@ -76,6 +74,6 @@ export const deleteTodo = (docid, userid) => async (dispatch) => {
             payload: docid,
         });
     } catch (error) {
-        console.log(error);
+        setAlert('Something Went Wrong. Try Again Later', 'd');
     }
 };

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Input from '../Forms/Utils/Input';
 import Button from '../Forms/Utils/Button';
-import { setAlert } from '../../redux/actions/alert';
 import { connect } from 'react-redux';
 import { addNewTodo } from '../../redux/actions/todo';
 const TodoForm = styled.form`
@@ -13,7 +12,7 @@ const TodoForm = styled.form`
     margin: 2rem 0;
 `;
 
-const AddTodo = ({ setAlert, addNewTodo, user }) => {
+const AddTodo = ({ addNewTodo, user }) => {
     const [todo, setTodo] = useState('');
 
     const onChange = (e) => {
@@ -50,4 +49,4 @@ AddTodo.propTypes = {
     user: PropTypes.object.isRequired,
 };
 
-export default connect(null, { setAlert, addNewTodo })(AddTodo);
+export default connect(null, { addNewTodo })(AddTodo);
