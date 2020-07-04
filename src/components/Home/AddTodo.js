@@ -23,7 +23,7 @@ const AddTodo = ({ setAlert, addNewTodo, user }) => {
     const onSubmit = (e) => {
         e.preventDefault();
         if (todo.length === 0) {
-            setAlert("Todo can't be empty", 'd');
+            return setAlert("Todo can't be empty", 'd');
         }
         addNewTodo(todo, user.uid);
         setTodo('');
