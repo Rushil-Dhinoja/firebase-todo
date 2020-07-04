@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 const Alertbox = styled.div`
     position: absolute;
-    width: 30%;
+    width: 40%;
     background-color: ${(props) =>
         props.variant === 'success' ? 'var(--alert-success)' : 'var(--alert-danger)'};
     top: 5rem;
@@ -15,6 +15,13 @@ const Alertbox = styled.div`
     border-radius: 5px;
     cursor: pointer;
     box-shadow: 0 3px 6px var(--alert-shadow);
+    z-index: 150;
+    @media ${(props) => props.theme.mediaQueries.medium} {
+        width: 60%;
+    }
+    @media ${(props) => props.theme.mediaQueries.small} {
+        width: 90%;
+    }
 `;
 
 const Alerttext = styled.p`

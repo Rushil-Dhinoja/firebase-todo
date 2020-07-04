@@ -8,13 +8,15 @@ const ProtectedRoute = ({ component: Component, auth: { authenticated, loading }
         <Route
             {...rest}
             render={(props) =>
-                !authenticated && loading ? <Redirect to='/login' /> : <Component {...props} />
+                !authenticated && !loading ? <Redirect to='/login' /> : <Component {...props} />
             }
         />
     );
 };
 
-ProtectedRoute.propTypes = {};
+ProtectedRoute.propTypes = {
+    auth: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = (state) => ({
     auth: state.auth,

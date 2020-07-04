@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Home from './components/Home/Home';
 import Signup from './components/Forms/Signup/Signup';
 import Login from './components/Forms/Login/Login';
 import Alert from './components/utils/Alert';
 import Routes from './components/utils/Routes';
+import { setUser } from './redux/actions/auth';
+import { connect } from 'react-redux';
 
-function App() {
+function App({ setUser }) {
+    useEffect(() => {
+        setUser();
+    }, [setUser]);
+
     return (
         <Router>
             <Alert />
@@ -20,4 +25,4 @@ function App() {
     );
 }
 
-export default App;
+export default connect(null, { setUser })(App);

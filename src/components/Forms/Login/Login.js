@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Title from '../Utils/Title';
 import Button from '../Utils/Button';
 import google from '../../../assets/img/Google.svg';
 import facebook from '../../../assets/img/facebook.svg';
+
+import { Link, Redirect } from 'react-router-dom';
+import Input from '../Utils/Input';
+import { connect } from 'react-redux';
 import {
     logInWithGoogle,
     logInWithFacebook,
-    logInWithDetails,
-} from '../../../controller/FormsController';
-import { Link } from 'react-router-dom';
-import Input from '../Utils/Input';
+    logInUserWithDetails,
+} from '../../../redux/actions/auth';
+import Loader from '../../utils/Loader';
+import { setAlert } from '../../../redux/actions/alert';
+import ForgotPassword from '../FogotPassword/ForgotPassword';
+import Backdrop from '../Utils/Backdrop';
 
 const Wrapper = styled.div`
     position: absolute;
@@ -95,7 +101,7 @@ const DisabledLinks = styled.p`
     margin: ${(props) => (props.margin ? props.margin + 'rem 0 0 0' : '0.5rem 0')};
     color: ${(props) => props.color};
     font: 300 ${(props) => (props.size ? props.size + 'rem' : '1.2rem')} 'montserrat';
-
+    cursor: pointer;
     &:hover {
         text-decoration: ${(props) => (props.link ? 'underline' : '')};
     }
@@ -105,58 +111,142 @@ const DisabledLinks = styled.p`
     }
 `;
 
-const Login = () => {
-    return (
-        <Wrapper>
-            <Title>Login to your account</Title>
-            <ButtonWrapper>
-                <Button
-                    color={'var(--color-main)'}
-                    bg={'var(--color-white)'}
-                    type={'button'}
-                    onClick={logInWithGoogle}>
-                    {' '}
-                    <img src={google} alt='G' />
-                    Log in With Google
-                </Button>
+const Login = ({
+    logInWithGoogle,
+    logInWithFacebook,
+    logInUserWithDetails,
+    setAlert,
+    auth: { authenticated, loading },
+}) => {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+    const [showForgotPasswordPopup, setShowForgotPasswordPopup] = useState(false);
+    const onChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-                <Button
-                    color={'var(--color-main)'}
-                    bg={'var(--color-white)'}
-                    type={'button'}
-                    onClick={logInWithFacebook}>
-                    {' '}
-                    <img src={facebook} alt='F' />
-                    Log in with Facebook
-                </Button>
-            </ButtonWrapper>
-            <Seprator>OR</Seprator>
-            <Form onSubmit={(e) => logInWithDetails(e)}>
-                <Input name={'email'} type={'email'} placeholder={'Email'} />
-                <Input name={'password'} type={'password'} placeholder={'Password'} />
-                <Button
-                    uppercase={true}
-                    color={'var(--color-white)'}
-                    width={'50'}
-                    bg={'var(--color-secondary)'}
-                    type={'submit'}>
-                    Log in
-                </Button>
-                <DisabledLinks link={'true'} color={'var(--color-secondary)'}>
-                    Forgot Password ?
-                </DisabledLinks>
-                <DisabledLinks color={'var(--color-main)'} size={1.4} margin={1.5}>
-                    {' '}
-                    Don't have an Account ?
-                </DisabledLinks>
-                <Links to='/signup' link={'true'} color={'var(--color-secondary)'} margin={0}>
-                    Create Account
-                </Links>
-            </Form>
-        </Wrapper>
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        if (formData.email.length === 0) {
+            setFormData({ ...formData, password: '' });
+            return setAlert('Email Required', 'd');
+        }
+        if (formData.password.length === 0) {
+            setFormData({ ...formData, password: '' });
+            return setAlert('Password Required', 'd');
+        }
+
+        logInUserWithDetails(formData);
+        setFormData({ ...formData, email: '', password: '' });
+    };
+
+    return (
+        <div>
+            {!loading ? (
+                !authenticated ? (
+                    <>
+                        <ForgotPassword
+                            showForgotPasswordPopup={showForgotPasswordPopup}
+                            setShowForgotPasswordPopup={setShowForgotPasswordPopup}
+                        />
+                        {showForgotPasswordPopup ? (
+                            <Backdrop setShowForgotPasswordPopup={setShowForgotPasswordPopup} />
+                        ) : (
+                            ' '
+                        )}
+                        <Wrapper>
+                            {' '}
+                            <Title>Login to your account</Title>
+                            <ButtonWrapper>
+                                <Button
+                                    onClick={logInWithGoogle}
+                                    color={'var(--color-main)'}
+                                    bg={'var(--color-white)'}
+                                    type={'button'}>
+                                    {' '}
+                                    <img src={google} alt='G' />
+                                    Log in With Google
+                                </Button>
+
+                                <Button
+                                    onClick={logInWithFacebook}
+                                    color={'var(--color-main)'}
+                                    bg={'var(--color-white)'}
+                                    type={'button'}>
+                                    {' '}
+                                    <img src={facebook} alt='F' />
+                                    Log in with Facebook
+                                </Button>
+                            </ButtonWrapper>
+                            <Seprator>OR</Seprator>
+                            <Form onSubmit={(e) => onSubmit(e)}>
+                                <Input
+                                    value={formData.email}
+                                    onChange={onChange}
+                                    name={'email'}
+                                    type={'email'}
+                                    placeholder={'Email'}
+                                />
+                                <Input
+                                    value={formData.password}
+                                    onChange={onChange}
+                                    name={'password'}
+                                    type={'password'}
+                                    placeholder={'Password'}
+                                />
+                                <Button
+                                    uppercase={true}
+                                    color={'var(--color-white)'}
+                                    width={'50'}
+                                    bg={'var(--color-secondary)'}
+                                    type={'submit'}>
+                                    Log in
+                                </Button>
+                                <DisabledLinks
+                                    onClick={() => setShowForgotPasswordPopup(true)}
+                                    link={'true'}
+                                    color={'var(--color-secondary)'}>
+                                    Forgot Password ?
+                                </DisabledLinks>
+                                <DisabledLinks color={'var(--color-main)'} size={1.4} margin={1.5}>
+                                    {' '}
+                                    Don't have an Account ?
+                                </DisabledLinks>
+                                <Links
+                                    to='/signup'
+                                    link={'true'}
+                                    color={'var(--color-secondary)'}
+                                    margin={0}>
+                                    Create Account
+                                </Links>
+                            </Form>
+                        </Wrapper>
+                    </>
+                ) : (
+                    <Redirect to='/' />
+                )
+            ) : (
+                <Loader />
+            )}
+        </div>
     );
 };
 
-Login.propTypes = {};
+Login.propTypes = {
+    logInWithGoogle: PropTypes.func.isRequired,
+    logInWithFacebook: PropTypes.func.isRequired,
+};
 
-export default Login;
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+});
+
+export default connect(mapStateToProps, {
+    logInWithGoogle,
+    logInWithFacebook,
+    logInUserWithDetails,
+    setAlert,
+})(Login);

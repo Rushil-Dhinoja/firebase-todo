@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Title from '../Utils/Title';
 import Button from '../Utils/Button';
 import google from '../../../assets/img/Google.svg';
 import facebook from '../../../assets/img/facebook.svg';
-import { logInWithGoogle, logInWithFacebook } from '../../../controller/FormsController';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Input from '../Utils/Input';
+import {
+    logInWithGoogle,
+    logInWithFacebook,
+    createAccountWithDetails,
+} from '../../../redux/actions/auth';
+import { connect } from 'react-redux';
+import Loader from '../../utils/Loader';
+import { setAlert } from '../../../redux/actions/alert';
 const Wrapper = styled.div`
     position: absolute;
     top: 50%;
@@ -98,55 +105,157 @@ const DisabledLinks = styled.p`
     }
 `;
 
-const Signup = () => {
+const Signup = ({
+    logInWithGoogle,
+    logInWithFacebook,
+    setAlert,
+    createAccountWithDetails,
+    auth: { authenticated, loading },
+}) => {
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
+
+    const onChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        if (formData.fullName.length === 0) {
+            setFormData({ ...formData, password: '', confirmPassword: '' });
+            return setAlert('Full Name Required', 'd');
+        }
+
+        if (!formData.fullName.match(/^[A-Za-z ]+$/)) {
+            setFormData({ ...formData, password: '', confirmPassword: '' });
+            return setAlert('Name should contain only alphabets');
+        }
+
+        if (formData.email.length === 0) {
+            setFormData({ ...formData, password: '', confirmPassword: '' });
+            return setAlert('Email Required', 'd');
+        }
+        if (formData.password.length === 0) {
+            setFormData({ ...formData, password: '', confirmPassword: '' });
+
+            return setAlert('Password Required', 'd');
+        }
+        if (formData.password.length < 8) {
+            setFormData({ ...formData, password: '', confirmPassword: '' });
+
+            return setAlert('Password should have 8 characters', 'd');
+        }
+        if (formData.password !== formData.confirmPassword) {
+            setFormData({ ...formData, password: '', confirmPassword: '' });
+
+            return setAlert("Password don't match", 'd');
+        }
+        setFormData({ ...formData, fullName: '', email: '', password: '', confirmPassword: '' });
+        createAccountWithDetails(formData);
+    };
+
     return (
-        <Wrapper>
-            <Title>Create Your Account</Title>
-            <ButtonWrapper>
-                <Button
-                    color={'var(--color-main)'}
-                    bg={'var(--color-white)'}
-                    type={'button'}
-                    onClick={logInWithGoogle}>
-                    {' '}
-                    <img src={google} alt='' />
-                    Log in With Google
-                </Button>
-                <Button
-                    bg={'var(--color-white)'}
-                    color={'var(--color-main)'}
-                    type={'button'}
-                    onClick={logInWithFacebook}>
-                    {' '}
-                    <img src={facebook} alt='' />
-                    Log in with Facebook
-                </Button>
-            </ButtonWrapper>
-            <Seprator>OR</Seprator>
-            <Form>
-                <Input type={'text'} placeholder={'Full Name'}></Input>
-                <Input type={'email'} placeholder={'Email'}></Input>
-                <Input type={'password'} placeholder={'Password'}></Input>
-                <Input type={'password'} placeholder={'Confirm Password'}></Input>
-                <Button
-                    type={'submit'}
-                    bg={'var(--color-secondary)'}
-                    width={50}
-                    uppercase={true}
-                    color={'var(--color-white)'}>
-                    Sign Up
-                </Button>
-                <DisabledLinks color={'var(--color-main)'} margin={1}>
-                    Already Registered ?
-                </DisabledLinks>
-                <Links link={'true'} color={'var(--color-secondary)'} to='/login' margin={0}>
-                    Login
-                </Links>
-            </Form>
-        </Wrapper>
+        <div>
+            {!loading ? (
+                !authenticated ? (
+                    <Wrapper>
+                        <Title>Create Your Account</Title>
+                        <ButtonWrapper>
+                            <Button
+                                onClick={logInWithGoogle}
+                                color={'var(--color-main)'}
+                                bg={'var(--color-white)'}
+                                type={'button'}>
+                                {' '}
+                                <img src={google} alt='' />
+                                Log in With Google
+                            </Button>
+                            <Button
+                                onClick={logInWithFacebook}
+                                bg={'var(--color-white)'}
+                                color={'var(--color-main)'}
+                                type={'button'}>
+                                {' '}
+                                <img src={facebook} alt='' />
+                                Log in with Facebook
+                            </Button>
+                        </ButtonWrapper>
+                        <Seprator>OR</Seprator>
+                        <Form onSubmit={(e) => onSubmit(e)}>
+                            <Input
+                                value={formData.fullName}
+                                name={'fullName'}
+                                type={'text'}
+                                onChange={onChange}
+                                placeholder={'Full Name'}></Input>
+                            <Input
+                                value={formData.email}
+                                name={'email'}
+                                type={'email'}
+                                onChange={onChange}
+                                placeholder={'Email'}></Input>
+                            <Input
+                                value={formData.password}
+                                name={'password'}
+                                type={'password'}
+                                onChange={onChange}
+                                placeholder={'Password'}></Input>
+                            <Input
+                                value={formData.confirmPassword}
+                                name={'confirmPassword'}
+                                type={'password'}
+                                onChange={onChange}
+                                placeholder={'Confirm Password'}></Input>
+                            <Button
+                                type={'submit'}
+                                bg={'var(--color-secondary)'}
+                                width={50}
+                                uppercase={true}
+                                color={'var(--color-white)'}>
+                                Sign Up
+                            </Button>
+                            <DisabledLinks color={'var(--color-main)'} margin={1}>
+                                Already Registered ?
+                            </DisabledLinks>
+                            <Links
+                                link={'true'}
+                                color={'var(--color-secondary)'}
+                                to='/login'
+                                margin={0}>
+                                Login
+                            </Links>
+                        </Form>
+                    </Wrapper>
+                ) : (
+                    <Redirect to='/' />
+                )
+            ) : (
+                <Loader />
+            )}
+        </div>
     );
 };
 
-Signup.propTypes = {};
+Signup.propTypes = {
+    logInWithGoogle: PropTypes.func.isRequired,
+    logInWithFacebook: PropTypes.func.isRequired,
+    setAlert: PropTypes.func.isRequired,
+    createAccountWithDetails: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+};
 
-export default Signup;
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+});
+
+export default connect(mapStateToProps, {
+    logInWithGoogle,
+    logInWithFacebook,
+    setAlert,
+    createAccountWithDetails,
+})(Signup);

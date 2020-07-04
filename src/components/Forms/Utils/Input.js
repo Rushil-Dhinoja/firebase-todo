@@ -23,8 +23,15 @@ const Field = styled.input`
     }
 `;
 
-const Input = ({ placeholder, type, name }) => {
-    return <Field name={name} placeholder={placeholder} type={type}></Field>;
+const Input = ({ placeholder, type, name, value, onChange }) => {
+    return (
+        <Field
+            name={name}
+            value={value}
+            onChange={(e) => onChange(e)}
+            placeholder={placeholder}
+            type={type}></Field>
+    );
 };
 
 export default Input;

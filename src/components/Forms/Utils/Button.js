@@ -7,7 +7,7 @@ const Btn = styled.button`
     border-radius: 10px;
     box-shadow: 0 0 10px var(--button-shadow);
     width: ${(props) => (props.width ? props.width + '%' : '80%')};
-    background-color: ${(props) => props.bg};
+    background-color: ${(props) => (props.disabled ? 'var(--box-shadow)' : props.bg)};
     font: 400 1.4rem 'montserrat';
     color: ${(props) => props.color};
     cursor: pointer;
@@ -29,7 +29,7 @@ const Btn = styled.button`
         font-size: 1.2rem;
     }
     &:hover {
-        transform: translateY(-2px);
+        transform: ${(props) => (props.disabled ? '' : 'translateY(-2px)')};
     }
 
     &:not(:last-child) {
@@ -41,16 +41,20 @@ const Btn = styled.button`
     }
 `;
 
-const Button = ({ children, onClick, type, bg, width, color, uppercase }) => {
-    const click = (onClick = type === 'button' ? onClick : '');
+const Button = ({ children, onClick, type, bg, width, color, uppercase, disabled }) => {
     return (
         <Btn
             uppercase={uppercase}
-            onClick={() => click()}
+            onClick={() => {
+                if (type === 'button') {
+                    onClick();
+                }
+            }}
             color={color}
             bg={bg}
             width={width}
-            type={type}>
+            type={type}
+            disabled={disabled}>
             {children}
         </Btn>
     );
