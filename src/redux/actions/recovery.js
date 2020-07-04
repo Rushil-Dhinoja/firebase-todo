@@ -26,7 +26,6 @@ export const resendVerificationEamil = () => async (dispatch) => {
         await firebase.auth().currentUser.sendEmailVerification();
         dispatch(setAlert('Verification Email Send Again', 'success'));
     } catch (error) {
-        console.log(error);
         dispatch(setAlert('Something Went Wrong. Try again later', 'd'));
     }
 };
@@ -55,7 +54,6 @@ export const updateName = (name, newInitials, oldInitials) => async (dispatch) =
 
         dispatch({ type: SET_LOADING });
     } catch (error) {
-        console.log(error);
         dispatch({ type: SET_LOADING });
         dispatch(setAlert('Something Went Wrong. Try Again Later', 'd'));
     }

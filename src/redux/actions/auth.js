@@ -80,10 +80,6 @@ export const logInWithFacebook = () => async (dispatch) => {
     try {
         const provider = new firebase.auth.FacebookAuthProvider();
         const user = await firebase.auth().signInWithPopup(provider);
-
-        const url = await storage.ref().child(`profilePics/${user.user.uid}`).getDownloadURL();
-        console.log(url);
-
         const img = picturesFromInitials(user.user.displayName, random());
 
         const res = await storage
@@ -107,7 +103,6 @@ export const logInWithFacebook = () => async (dispatch) => {
         dispatch(setAlert('Logged In Successfully', 'success'));
     } catch (error) {
         console.log(error);
-
         if (error.code === 'auth/account-exists-with-different-credential') {
             dispatch({ type: SIGN_OUT_USER });
             dispatch({ type: SET_LOADING });
@@ -151,7 +146,6 @@ export const createAccountWithDetails = (formData) => async (dispatch) => {
         });
         dispatch(setAlert('Logged In Successfully', 'success'));
     } catch (error) {
-        console.log(error);
         if (error.code === 'auth/invalid-email') {
             dispatch({ type: SIGN_OUT_USER });
             dispatch({ type: SET_LOADING });
